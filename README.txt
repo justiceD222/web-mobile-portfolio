@@ -1,25 +1,25 @@
-Justice Denison Portfolio - Cloudflare Pages public output version
+Justice Denison Portfolio - Cloudflare Workers Static Assets version
 
-Put this entire folder content at the root of the GitHub repository connected to Cloudflare Pages.
+Use this package if your Cloudflare dashboard shows tabs like Deployments, Bindings, Observability, and Domains, and the build log says Wrangler is deploying assets.
 
-Required structure:
+Required GitHub root structure:
 public/index.html
 public/css/
 public/img/
 public/js/
-functions/api/view-event.js
+src/worker.js
+wrangler.jsonc
 .gitignore
 .env.example
 README.txt
 
-Cloudflare Pages settings:
-- Framework preset: None
-- Build command: leave empty
-- Build output directory: public
-- Root directory: repository root
+Cloudflare setting:
+- Keep the project connected to GitHub.
+- Push this structure to the repo root.
+- The wrangler.jsonc file forces assets.directory to ./public so node_modules is not uploaded as a site asset.
 
 Cloudflare secrets:
-Workers & Pages > your Pages project > Settings > Variables and Secrets
+Workers & Pages > your project > Settings > Variables and Secrets
 
 Add only the services you want:
 SLACK_WEBHOOK_URL

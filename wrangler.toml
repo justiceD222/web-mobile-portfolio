@@ -1,0 +1,7 @@
+name = "web-mobile-portfolio"
+main = "src/worker.js"
+compatibility_date = "2026-08-10"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"

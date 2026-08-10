@@ -6,3 +6,9 @@ npm-debug.log*
 bun.lock
 bun.lockb
 package-lock.json
+package.json
+functions/
+src/worker.js
+server.js
+start-portfolio.bat
+wrangler.jsonc

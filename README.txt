@@ -1,30 +1,31 @@
-Justice Denison Portfolio - Cloudflare Workers Static Assets version
+Justice Denison Portfolio - final Cloudflare Workers copy
 
-Use this package if your Cloudflare dashboard shows tabs like Deployments, Bindings, Observability, and Domains, and the build log says Wrangler is deploying assets.
+Copy the contents of this folder into the GitHub repo root after deleting old files except .git.
 
-Required GitHub root structure:
-public/index.html
-public/css/
-public/img/
-public/js/
-src/worker.js
-wrangler.jsonc
+Final root structure:
+public/
+src/index.js
+wrangler.toml
 .gitignore
 .env.example
 README.txt
 
-Cloudflare setting:
-- Keep the project connected to GitHub.
-- Push this structure to the repo root.
-- The wrangler.jsonc file forces assets.directory to ./public so node_modules is not uploaded as a site asset.
+Do not keep these old files in the repo:
+functions/
+node_modules/
+src/worker.js
+wrangler.jsonc
+package.json
+package-lock.json
+server.js
+start-portfolio.bat
+.env
 
-Cloudflare secrets:
-Workers & Pages > your project > Settings > Variables and Secrets
+Cloudflare deploy command can stay:
+npx wrangler deploy
 
-Add only the services you want:
+Cloudflare variables/secrets:
 SLACK_WEBHOOK_URL
 DISCORD_WEBHOOK_URL
 TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
-
-Do not upload .env or node_modules to GitHub.

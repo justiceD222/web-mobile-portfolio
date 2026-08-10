@@ -12,24 +12,28 @@ function getVisitorIp(request) {
 }
 
 function detectDevice(userAgent, platform = "") {
-  const ua = String((userAgent || "") + " " + (platform || ""));
-  if (/ipad/i.test(ua) || (/macintosh/i.test(ua) && /mobile/i.test(ua))) return "iPad";
-  if (/iphone/i.test(ua)) return "iPhone";
-  if (/samsung|sm-|galaxy/i.test(ua)) return "Samsung";
-  if (/android/i.test(ua)) return "Android";
-  if (/macintosh|mac os x|macintel/i.test(ua)) return "Macintosh";
-  if (/windows|win32|win64/i.test(ua)) return "Windows";
-  if (/linux/i.test(ua)) return "Linux";
+  const ua = String((userAgent || "") + " " + (platform || "")).toLowerCase();
+
+  if (ua.includes("ipad") || (ua.includes("macintosh") && ua.includes("mobile"))) return "iPad";
+  if (ua.includes("iphone")) return "iPhone";
+  if (ua.includes("samsung") || ua.includes("sm-") || ua.includes("galaxy")) return "Samsung";
+  if (ua.includes("android")) return "Android";
+  if (ua.includes("macintosh") || ua.includes("mac os x") || ua.includes("macintel")) return "Macintosh";
+  if (ua.includes("windows") || ua.includes("win32") || ua.includes("win64")) return "Windows";
+  if (ua.includes("linux")) return "Linux";
+
   return "Unknown device";
 }
 
 function detectBrowser(userAgent) {
   const ua = userAgent || "";
-  if (/Edg//.test(ua)) return "Microsoft Edge";
-  if (/OPR//.test(ua) || /Opera/i.test(ua)) return "Opera";
-  if (/Firefox//.test(ua)) return "Firefox";
-  if (/Chrome//.test(ua) && !/Chromium|Edg//.test(ua)) return "Chrome";
-  if (/Safari//.test(ua) && !/Chrome|Chromium|Edg//.test(ua)) return "Safari";
+
+  if (ua.includes("Edg/")) return "Microsoft Edge";
+  if (ua.includes("OPR/") || ua.includes("Opera")) return "Opera";
+  if (ua.includes("Firefox/")) return "Firefox";
+  if (ua.includes("Chrome/") && !ua.includes("Chromium") && !ua.includes("Edg/")) return "Chrome";
+  if (ua.includes("Safari/") && !ua.includes("Chrome") && !ua.includes("Chromium") && !ua.includes("Edg/")) return "Safari";
+
   return "Unknown browser";
 }
 
@@ -55,22 +59,24 @@ function formatAlert(event, request) {
     "Page: " + (event.pageUrl || "Unknown"),
     "Referrer: " + (event.referrer || "Direct / none"),
     "Viewed: " + (event.viewedAt || new Date().toISOString())
-  ].join("
-");
+  ].join("\n");
 }
 
 async function postJson(url, payload) {
   if (!url) return;
+
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
+
   if (!response.ok) throw new Error("Webhook failed: " + response.status);
 }
 
 async function sendTelegram(env, message) {
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return;
+
   await postJson("https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/sendMessage", {
     chat_id: env.TELEGRAM_CHAT_ID,
     text: message,
@@ -88,6 +94,7 @@ async function sendNotifications(env, message) {
 
 async function handleViewEvent(request, env, ctx) {
   let event;
+
   try {
     event = await request.json();
   } catch (error) {
@@ -99,6 +106,7 @@ async function handleViewEvent(request, env, ctx) {
 
   const message = formatAlert(event, request);
   ctx.waitUntil(sendNotifications(env, message));
+
   return new Response(null, { status: 204 });
 }
 
@@ -113,6 +121,7 @@ export default {
           headers: { Allow: "POST" }
         });
       }
+
       return handleViewEvent(request, env, ctx);
     }
 
